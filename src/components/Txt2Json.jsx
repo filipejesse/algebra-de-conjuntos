@@ -33,7 +33,7 @@ class Txt2Json extends Component {
     exp = /[=]/g;
     result = result.replace(exp, '":');
     result = "{\"" + result + "}";
-    exp = /[A-Z]/g;
+    exp = /[A-Za-z]/g;
     result = result.replace(', "}', '}')
     result = JSON.parse(result);
     console.log(result);
