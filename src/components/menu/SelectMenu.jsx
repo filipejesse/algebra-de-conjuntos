@@ -15,6 +15,9 @@ class SelectMenu extends Component {
     this.elementsOf = this.elementsOf.bind(this);
     this.contains = this.contains.bind(this);
     this.properlyContains = this.properlyContains.bind(this);
+    this.cartesian = this.cartesian.bind(this);
+
+    this.notFound = this.notFound.bind(this);
   }
 
   handleChangeA(event) {
@@ -237,7 +240,47 @@ class SelectMenu extends Component {
 
 
   }
-  
+
+  cartesian() {
+    let text = this.props.xmlFile;
+    let first = this.state.first;
+    let second = this.state.second;
+    let valueFirst = [];
+    let valueSecond = [];
+
+    let exp = /[A-Z]/g;
+    if (first.match(exp) && second.match(exp)) {
+
+      text.forEach(x => {
+        if (x.nome === first) {
+          valueFirst = x.valor;
+        }
+        if (x.nome === second) {
+          valueSecond = x.valor;
+        }
+      })
+
+      document.getElementById('result').innerHTML = first + ' x ' + second + ' = {'
+      for (let i = 0; i < valueFirst.length; i++) {
+        for (let j = 0; j < valueSecond.length; j++) {
+          document.getElementById('result').innerHTML += '<' + valueFirst[i] + ', ' + valueSecond[j] + '>, ';
+        }
+      }
+      document.getElementById('result').innerHTML += '}';
+
+
+    }
+    else {
+      document.getElementById('result').innerHTML = 'Selecione dois conjuntos';
+    }
+
+
+  }
+
+  notFound() {
+    document.getElementById('result').innerHTML = 'Função não pronta';
+  }
+
   render() {
     this.populateSelect();
     return (
@@ -263,12 +306,12 @@ class SelectMenu extends Component {
             <Button isColor="primary" onClick={this.contains}>⊈</Button>
             <Button isColor="info" onClick={this.properlyContains}>⊂</Button>
             <Button isColor="primary" onClick={this.properlyContains}>⊄</Button>
-            <Button isColor="info">⊃</Button>
-            <Button isColor="primary">⊅</Button>
+            <Button isColor="info" onClick={this.notFound}>⊃</Button>
+            <Button isColor="primary" onClick={this.notFound}>⊅</Button>
             <Button isColor="info" onClick={this.unionSet}>∪</Button>
             <Button isColor="primary" onClick={this.interception}>∩</Button>
-            <Button isColor="info">x</Button>
-            <Button isColor="primary">P(A)</Button>
+            <Button isColor="info" onClick={this.cartesian}>x</Button>
+            <Button isColor="primary" onClick={this.notFound}>P(A)</Button>
           </Column>
         </Columns>
         <Box id="result">
