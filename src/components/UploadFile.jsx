@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FileBase64 from 'react-file-base64';
 import { Base64 } from 'js-base64';
+import { Column } from 'bloomer';
 
 class UploadFile extends Component {
   constructor(props) {
@@ -31,9 +32,9 @@ class UploadFile extends Component {
 
   render() {
     return (
-      <div>
+      <Column>
         <FileBase64 multiple={false} onDone={this.getFile} />
-      </div>
+      </Column>
     )
   }
 

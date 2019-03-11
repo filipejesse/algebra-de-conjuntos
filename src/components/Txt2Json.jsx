@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'bloomer';
+import { Button, Column } from 'bloomer';
 
 class Txt2Json extends Component {
   constructor(props) {
@@ -31,9 +31,10 @@ class Txt2Json extends Component {
 
   render() {
     return (
-      <div>
-        <Button isColor='info' onClick={this.handleSubmit}>Show</Button>
-      </div>
+      <Column>
+        <Button isColor='info' onClick={this.handleSubmit}>Select</Button>
+      </Column>
+
     );
   }
 }

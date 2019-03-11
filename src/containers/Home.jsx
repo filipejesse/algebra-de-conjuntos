@@ -26,8 +26,10 @@ class Home extends Component {
           <Column isSize="1/3">
             <Title>Menu</Title>
             <Box>
-              <UploadFile handler={this.handler} xmlFile={this.state.xmlFile} />
-              <Txt2Json handler={this.handler} xmlFile={this.state.xmlFile} />
+              <Columns>
+                <UploadFile handler={this.handler} xmlFile={this.state.xmlFile} />
+                <Txt2Json handler={this.handler} xmlFile={this.state.xmlFile} />
+              </Columns>
             </Box>
             <Title>Data</Title>
             <Box>
