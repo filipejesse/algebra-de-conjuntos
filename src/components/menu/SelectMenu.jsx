@@ -16,7 +16,7 @@ class SelectMenu extends Component {
     this.contains = this.contains.bind(this);
     this.properlyContains = this.properlyContains.bind(this);
     this.cartesian = this.cartesian.bind(this);
-
+    this.partiallyOrderedSets = this.partiallyOrderedSets.bind(this);
     this.notFound = this.notFound.bind(this);
   }
 
@@ -95,9 +95,9 @@ class SelectMenu extends Component {
         }
       })
 
-      for(let i = 0; i < valueFirst.length; i++) {
-        for(let j = 0; j < valueSecond.length; j++) {
-          if(valueFirst[i] === valueSecond[j]){
+      for (let i = 0; i < valueFirst.length; i++) {
+        for (let j = 0; j < valueSecond.length; j++) {
+          if (valueFirst[i] === valueSecond[j]) {
             inter.push(valueFirst[i]);
           }
         }
@@ -277,6 +277,95 @@ class SelectMenu extends Component {
 
   }
 
+  partiallyOrderedSets() {
+
+    let text = this.props.xmlFile;
+    let first = this.state.first;
+    let valueFirst = [];
+
+
+    let exp = /[A-Z]/g;
+    if (first.match(exp)) {
+
+      text.forEach(x => {
+        if (x.nome === first) {
+          valueFirst = x.valor;
+        }
+      })
+
+
+
+      let lengthSet = Math.pow(valueFirst.length, 2);
+      let matriz = [valueFirst.length];
+
+      for (let i = 0; i < lengthSet; i++) {
+        matriz[i] = [valueFirst.length];
+      }
+
+      for (let i = 0; i < lengthSet; i++) {
+        for (let j = 0; j < valueFirst.length; j++) {
+          matriz[i][j] = valueFirst[j];
+        }
+      }
+
+      let binario = [];
+      let max = (lengthSet - 1).toString(2).length;
+      for (let i = 0; i < lengthSet; i++) {
+        // binario[i] = i.toString(2);
+        let exp = /[\d]/g;
+        if (i.toString(2).length < max) {
+          binario[i] = i.toString(2).match(exp);
+          while (binario[i].length < max) {
+            let temp = max - binario[i].length;
+            binario[i] = [];
+            for (let j = 0; j < temp; j++) {
+              binario[i][j] = "0";
+            }
+            for (let c = 0; c < i.toString(2).length; c++) {
+              binario[i].push(i.toString(2).match(exp)[c]);
+            }
+
+
+          }
+        }
+        else {
+          binario[i] = i.toString(2).match(exp);
+        }
+      }
+
+
+
+      console.log(binario);
+      let string = '';
+
+      string = 'P(' + first + ') = { ';
+
+      for(let x = 0; x < lengthSet; x++) {
+
+        string += '{ ';
+        for(let y = 0; y < max; y++){
+          if(binario[x][y] === "1") {
+            string += matriz[x][y] + ',';
+          }
+        }
+        string += ' }';
+        string = string.replace(', }', ' }');
+      }
+
+      string += '}';
+
+
+      document.getElementById('result').innerHTML = string;
+
+
+    }
+    else {
+      document.getElementById('result').innerHTML = 'Selecione um conjunto';
+    }
+
+
+  }
+
   notFound() {
     document.getElementById('result').innerHTML = 'Função não pronta';
   }
@@ -306,12 +395,10 @@ class SelectMenu extends Component {
             <Button isColor="primary" onClick={this.contains}>⊈</Button>
             <Button isColor="info" onClick={this.properlyContains}>⊂</Button>
             <Button isColor="primary" onClick={this.properlyContains}>⊄</Button>
-            <Button isColor="info" onClick={this.notFound}>⊃</Button>
-            <Button isColor="primary" onClick={this.notFound}>⊅</Button>
             <Button isColor="info" onClick={this.unionSet}>∪</Button>
             <Button isColor="primary" onClick={this.interception}>∩</Button>
             <Button isColor="info" onClick={this.cartesian}>x</Button>
-            <Button isColor="primary" onClick={this.notFound}>P(A)</Button>
+            <Button isColor="primary" onClick={this.partiallyOrderedSets}>P(A)</Button>
           </Column>
         </Columns>
         <Box id="result">
