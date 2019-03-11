@@ -311,7 +311,6 @@ class SelectMenu extends Component {
       let binario = [];
       let max = (lengthSet - 1).toString(2).length;
       for (let i = 0; i < lengthSet; i++) {
-        // binario[i] = i.toString(2);
         let exp = /[\d]/g;
         if (i.toString(2).length < max) {
           binario[i] = i.toString(2).match(exp);
@@ -349,10 +348,11 @@ class SelectMenu extends Component {
           }
         }
         string += ' }';
-        string = string.replace(', }', ' }');
+        string = string.replace(', }', ' }, ');
       }
 
       string += '}';
+      string = string.replace(', }', ' }');
 
 
       document.getElementById('result').innerHTML = string;
