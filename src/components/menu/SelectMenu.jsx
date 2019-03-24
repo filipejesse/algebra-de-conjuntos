@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { Field, Label, Control, Select, Button, Columns, Column, Box } from 'bloomer';
+import { Field, Label, Control, Select, Button, Columns, Column, Box, Tag } from 'bloomer';
 
 class SelectMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {
       first: '',
-      second: ''
+      second: '',
+      third: '',
+      three: false
     }
-    this.handleChangeA = this.handleChangeA.bind(this);
-    this.handleChangeB = this.handleChangeB.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.populateSelect = this.populateSelect.bind(this);
     this.unionSet = this.unionSet.bind(this);
     this.interception = this.interception.bind(this);
@@ -18,7 +19,7 @@ class SelectMenu extends Component {
     this.properlyContains = this.properlyContains.bind(this);
     this.cartesian = this.cartesian.bind(this);
     this.partiallyOrderedSets = this.partiallyOrderedSets.bind(this);
-    this.lessThanThat = this.lessThanThat.bind(this);
+    this.lessThan = this.lessThan.bind(this);
     this.moreThanThat = this.moreThanThat.bind(this);
     this.equalsThan = this.equalsThan.bind(this);
     this.toTheSecondPower = this.toTheSecondPower.bind(this);
@@ -26,22 +27,14 @@ class SelectMenu extends Component {
     this.notFound = this.notFound.bind(this);
   }
 
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
 
-  handleChangeA(event) {
-    let value = event.target.value;
     this.setState({
-      first: value
+        [name]: value
     });
-    console.log(value);
-  }
-
-  handleChangeB(event) {
-    let value = event.target.value;
-    this.setState({
-      second: value
-    });
-    console.log(value);
-
   }
 
   populateSelect() {
@@ -51,6 +44,7 @@ class SelectMenu extends Component {
         if (!document.getElementById(x.nome)) {
           document.getElementById('selectA').innerHTML += '<option id="' + x.nome + '" value="' + x.nome + '">' + x.nome + '</option>'
           document.getElementById('selectB').innerHTML += '<option id="' + x.nome + '" value="' + x.nome + '">' + x.nome + '</option>'
+          document.getElementById('selectC').innerHTML += '<option id="' + x.nome + '" value="' + x.nome + '">' + x.nome + '</option>'
         }
       });
     }
@@ -82,6 +76,20 @@ class SelectMenu extends Component {
       }
     })
     return valueSecond;
+  }
+
+  thirdValue() {
+
+    let text = this.props.xmlFile;
+    let third = this.state.third;
+    let valueThird = [];
+
+    text.forEach(x => {
+      if (x.nome === third) {
+        valueThird = x.valor;
+      }
+    })
+    return valueThird;
   }
 
   unionSet() {
@@ -338,12 +346,16 @@ class SelectMenu extends Component {
     }
   }
 
-  lessThanThat() {
+  lessThan() {
     let first = this.state.first;
     let second = this.state.second;
+    let third = this.state.third;
     let valueFirst = this.firstValue();
     let valueSecond = this.secondValue();
+    let valueThird = this.thirdValue();
     let result = [] ;
+    let finalResult = [];
+    let text;
     let exp = /[A-Z]/g;
     if (first.match(exp) && second.match(exp)) {
       for (let i = 0; i < valueFirst.length; i++) {
@@ -353,11 +365,37 @@ class SelectMenu extends Component {
           }
         }
       }
-      document.getElementById('result').innerHTML = "("+first+" < "+second+") => " + this.toText(result);
+      if(this.state.three){
+        if(!third.match(exp)){
+          text = 'Selecione apenas conjuntos';
+        }
+        else {
+          let result2 = [];
+          for (let i = 0; i < valueSecond.length; i++) {
+            for (let j = 0; j < valueThird.length; j++) {
+              if (valueSecond[i] < valueThird[j]) {
+                result2.push("<"+valueSecond[i]+", "+valueThird[j]+">");
+              }
+            }
+          }
+          for(let i = 0; i < result.length; i++){
+            for(let j = 0; j < result2.length; j++){
+              if(result[i] === result2[j]){
+                finalResult.push(result[i]);
+              }
+            }
+          }
+          text = "("+first+" < "+third+") => " + this.toText(finalResult);
+        }
+      }
+      else{
+        text = "("+first+" < "+second+") => " + this.toText(result);
+      }
     }
     else {
-      document.getElementById('result').innerHTML = 'Selecione dois conjuntos';
+      text = 'Selecione apenas conjuntos';
     }
+    document.getElementById('result').innerHTML = text;
   }
 
   moreThanThat() {
@@ -460,6 +498,9 @@ class SelectMenu extends Component {
     result = result.replace(", }", " }");
     return result;
   }
+
+
+
   render() {
     this.populateSelect();
     return (
@@ -468,10 +509,13 @@ class SelectMenu extends Component {
           <Label>Select:</Label>
           <Control>
             <Column>
-              <Select id="selectA" onChange={this.handleChangeA}>
+              <Select name="first" id="selectA" onChange={this.handleInputChange}>
                 <option hidden>Select...</option>
               </Select>
-              <Select id="selectB" onChange={this.handleChangeB}>
+              <Select name="second" id="selectB" onChange={this.handleInputChange}>
+                <option hidden>Select...</option>
+              </Select>
+              <Select name="third" id="selectC" onChange={this.handleInputChange}>
                 <option hidden>Select...</option>
               </Select>
             </Column>
@@ -494,8 +538,14 @@ class SelectMenu extends Component {
         <Box id="result">
         </Box>
         <Columns>
+            <label className="switch">
+                <input name="three" type="checkbox" checked={this.state.three} onChange={this.handleInputChange} />
+                <div className="slider round"></div>
+            </label>
+            {this.state.three ?
+              <Tag isColor="success">3 Sets</Tag> : <Tag isColor="danger">2 Sets</Tag>}
           <Column>
-            <Button isColor="success" isOutlined onClick={this.lessThanThat}>(Menor que)</Button>
+            <Button isColor="success" isOutlined onClick={this.lessThan}>(Menor que)</Button>
             <Button isColor="info" isOutlined onClick={this.moreThanThat}> (Maior que) </Button>
             <Button isColor="success" isOutlined onClick={this.equalsThan}>(Igual à)</Button>
             <Button isColor="info" isOutlined onClick={this.toTheSecondPower}> (Quadrado de) </Button>
