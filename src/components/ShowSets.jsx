@@ -14,7 +14,13 @@ class ShowSets extends Component {
     let text = this.props.xmlFile;
     if (typeof (text) !== 'string') {
       text.forEach(x => {
-        document.getElementById("screen").innerHTML += "<tr><td>" + x.nome + "</td><td> {" + x.valor + "}   </td></tr>";
+        let exp = /[a-z]/g;
+        if(x.nome.match(exp)){
+          document.getElementById("screen").innerHTML += "<tr><td>" + x.nome + "</td><td> " + x.valor + "  </td></tr>";
+        }
+        else{
+          document.getElementById("screen").innerHTML += "<tr><td>" + x.nome + "</td><td> { " + x.valor + " }   </td></tr>";
+        }
       })
     }
   }

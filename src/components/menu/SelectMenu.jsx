@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Field, Label, Control, Select, Button, Columns, Column, Box } from 'bloomer';
+
 class SelectMenu extends Component {
   constructor(props) {
     super(props);
@@ -17,8 +18,14 @@ class SelectMenu extends Component {
     this.properlyContains = this.properlyContains.bind(this);
     this.cartesian = this.cartesian.bind(this);
     this.partiallyOrderedSets = this.partiallyOrderedSets.bind(this);
+    this.lessThanThat = this.lessThanThat.bind(this);
+    this.moreThanThat = this.moreThanThat.bind(this);
+    this.equalsThan = this.equalsThan.bind(this);
+    this.toTheSecondPower = this.toTheSecondPower.bind(this);
+    this.beSqrt = this.beSqrt.bind(this);
     this.notFound = this.notFound.bind(this);
   }
+
 
   handleChangeA(event) {
     let value = event.target.value;
@@ -49,26 +56,61 @@ class SelectMenu extends Component {
     }
   }
 
-  unionSet() {
+  firstValue() {
+
     let text = this.props.xmlFile;
     let first = this.state.first;
+    let valueFirst = [];
+
+    text.forEach(x => {
+      if (x.nome === first) {
+        valueFirst = x.valor;
+      }
+    })
+    return valueFirst;
+  }
+
+  secondValue() {
+
+    let text = this.props.xmlFile;
     let second = this.state.second;
-    let valueFirst;
-    let valueSecond;
+    let valueSecond = [];
+
+    text.forEach(x => {
+      if (x.nome === second) {
+        valueSecond = x.valor;
+      }
+    })
+    return valueSecond;
+  }
+
+  unionSet() {
+    let first = this.state.first;
+    let second = this.state.second;
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
+    let inter = [];
 
     let exp = /[A-Z]/g
     if (first.match(exp) && second.match(exp)) {
 
-      text.forEach(x => {
-        if (x.nome === first) {
-          valueFirst = x.valor;
+      for (let i = 0; i < valueFirst.length; i++) {
+        for (let j = 0; j < valueSecond.length; j++) {
+          if(inter.indexOf(valueSecond[j]) === -1){
+            inter.push(valueSecond[j]);
+          }
         }
-        if (x.nome === second) {
-          valueSecond = x.valor;
-        }
-      })
+      }
 
-      document.getElementById('result').innerHTML = '(' + first + ' ∪ ' + second + ') = {' + valueFirst + ',' + valueSecond + '}';
+      let string = '(' + first + ' ∪ ' + second + ') = { ';
+
+      for (let i = 0; i < inter.length; i++) {
+      string += inter[i] + ',';
+      }
+
+      string += '}';
+      string = string.replace(',}', ' }');
+      document.getElementById('result').innerHTML = string;
     }
     else {
       document.getElementById('result').innerHTML = 'Selecione dois conjuntos';
@@ -76,25 +118,14 @@ class SelectMenu extends Component {
   }
 
   interception() {
-    let text = this.props.xmlFile;
     let first = this.state.first;
     let second = this.state.second;
-    let valueFirst;
-    let valueSecond;
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
     let inter = [];
 
     let exp = /[A-Z]/g
     if (first.match(exp) && second.match(exp)) {
-
-      text.forEach(x => {
-        if (x.nome === first) {
-          valueFirst = x.valor;
-        }
-        if (x.nome === second) {
-          valueSecond = x.valor;
-        }
-      })
-
       for (let i = 0; i < valueFirst.length; i++) {
         for (let j = 0; j < valueSecond.length; j++) {
           if (valueFirst[i] === valueSecond[j]) {
@@ -110,24 +141,15 @@ class SelectMenu extends Component {
     }
   }
 
+
   elementsOf() {
-    let text = this.props.xmlFile;
     let first = this.state.first;
     let second = this.state.second;
-    let valueFirst = [];
-    let valueSecond = [];
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
 
     let exp = /[A-Z]/g;
     if (!first.match(exp) && second.match(exp) || first.match(exp) && !second.match(exp)) {
-
-      text.forEach(x => {
-        if (x.nome === first) {
-          valueFirst = x.valor;
-        }
-        if (x.nome === second) {
-          valueSecond = x.valor;
-        }
-      })
 
       if (first.match(exp)) {
         for (let i = 0; i < valueFirst.length; i++) {
@@ -158,24 +180,13 @@ class SelectMenu extends Component {
   }
 
   contains() {
-    let text = this.props.xmlFile;
     let first = this.state.first;
     let second = this.state.second;
-    let valueFirst = [];
-    let valueSecond = [];
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
 
     let exp = /[A-Z]/g;
     if (first.match(exp) && second.match(exp)) {
-
-      text.forEach(x => {
-        if (x.nome === first) {
-          valueFirst = x.valor;
-        }
-        if (x.nome === second) {
-          valueSecond = x.valor;
-        }
-      })
-
       let cont = 0;
       for (let i = 0; i < valueFirst.length; i++) {
         for (let j = 0; j < valueSecond.length; j++) {
@@ -200,24 +211,13 @@ class SelectMenu extends Component {
   }
 
   properlyContains() {
-    let text = this.props.xmlFile;
     let first = this.state.first;
     let second = this.state.second;
-    let valueFirst = [];
-    let valueSecond = [];
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
 
     let exp = /[A-Z]/g;
     if (first.match(exp) && second.match(exp)) {
-
-      text.forEach(x => {
-        if (x.nome === first) {
-          valueFirst = x.valor;
-        }
-        if (x.nome === second) {
-          valueSecond = x.valor;
-        }
-      })
-
       let cont = 0;
       for (let i = 0; i < valueFirst.length; i++) {
         for (let j = 0; j < valueSecond.length; j++) {
@@ -242,23 +242,13 @@ class SelectMenu extends Component {
   }
 
   cartesian() {
-    let text = this.props.xmlFile;
     let first = this.state.first;
     let second = this.state.second;
-    let valueFirst = [];
-    let valueSecond = [];
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
 
     let exp = /[A-Z]/g;
     if (first.match(exp) && second.match(exp)) {
-
-      text.forEach(x => {
-        if (x.nome === first) {
-          valueFirst = x.valor;
-        }
-        if (x.nome === second) {
-          valueSecond = x.valor;
-        }
-      })
 
       document.getElementById('result').innerHTML = first + ' x ' + second + ' = {'
       for (let i = 0; i < valueFirst.length; i++) {
@@ -278,30 +268,17 @@ class SelectMenu extends Component {
   }
 
   partiallyOrderedSets() {
-
-    let text = this.props.xmlFile;
     let first = this.state.first;
-    let valueFirst = [];
-
+    let valueFirst = this.firstValue();
 
     let exp = /[A-Z]/g;
     if (first.match(exp)) {
-
-      text.forEach(x => {
-        if (x.nome === first) {
-          valueFirst = x.valor;
-        }
-      })
-
-
-
-      let lengthSet = Math.pow(valueFirst.length, 2);
+      let lengthSet = Math.pow(2, valueFirst.length);
       let matriz = [valueFirst.length];
 
       for (let i = 0; i < lengthSet; i++) {
         matriz[i] = [valueFirst.length];
       }
-
       for (let i = 0; i < lengthSet; i++) {
         for (let j = 0; j < valueFirst.length; j++) {
           matriz[i][j] = valueFirst[j];
@@ -354,22 +331,135 @@ class SelectMenu extends Component {
       string += '}';
       string = string.replace(', }', ' }');
 
-
       document.getElementById('result').innerHTML = string;
-
-
     }
     else {
       document.getElementById('result').innerHTML = 'Selecione um conjunto';
     }
+  }
 
+  lessThanThat() {
+    let first = this.state.first;
+    let second = this.state.second;
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
+    let result = [] ;
+    let exp = /[A-Z]/g;
+    if (first.match(exp) && second.match(exp)) {
+      for (let i = 0; i < valueFirst.length; i++) {
+        for (let j = 0; j < valueSecond.length; j++) {
+          if (valueFirst[i] < valueSecond[j]) {
+            result.push("<"+valueFirst[i]+", "+valueSecond[j]+">");
+          }
+        }
+      }
+      document.getElementById('result').innerHTML = "("+first+" < "+second+") => " + this.toText(result);
+    }
+    else {
+      document.getElementById('result').innerHTML = 'Selecione dois conjuntos';
+    }
+  }
 
+  moreThanThat() {
+    let first = this.state.first;
+    let second = this.state.second;
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
+    let result = [] ;
+    let exp = /[A-Z]/g;
+    if (first.match(exp) && second.match(exp)) {
+      for (let i = 0; i < valueFirst.length; i++) {
+        for (let j = 0; j < valueSecond.length; j++) {
+          if (valueFirst[i] > valueSecond[j]) {
+            result.push("<"+valueFirst[i]+", "+valueSecond[j]+">");
+          }
+        }
+      }
+      document.getElementById('result').innerHTML = "("+first+" > "+second+") => " + this.toText(result);
+    }
+    else {
+      document.getElementById('result').innerHTML = 'Selecione dois conjuntos';
+    }
+  }
+
+  equalsThan() {
+    let first = this.state.first;
+    let second = this.state.second;
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
+    let result = [] ;
+    let exp = /[A-Z]/g;
+    if (first.match(exp) && second.match(exp)) {
+      for (let i = 0; i < valueFirst.length; i++) {
+        for (let j = 0; j < valueSecond.length; j++) {
+          if (valueFirst[i] === valueSecond[j]) {
+            result.push("<"+valueFirst[i]+", "+valueSecond[j]+">");
+          }
+        }
+      }
+      document.getElementById('result').innerHTML = "("+first+" = "+second+") => " + this.toText(result);
+    }
+    else {
+      document.getElementById('result').innerHTML = 'Selecione dois conjuntos';
+    }
+  }
+  toTheSecondPower() {
+    let first = this.state.first;
+    let second = this.state.second;
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
+    let result = [] ;
+    let exp = /[A-Z]/g;
+    if (first.match(exp) && second.match(exp)) {
+      for (let i = 0; i < valueFirst.length; i++) {
+        for (let j = 0; j < valueSecond.length; j++) {
+          if (Math.sqrt(valueFirst[i]) === valueSecond[j]) {
+            result.push("<"+valueFirst[i]+", "+valueSecond[j]+">");
+          }
+        }
+      }
+      document.getElementById('result').innerHTML = "("+first+"² = "+second+") => " + this.toText(result);
+    }
+    else {
+      document.getElementById('result').innerHTML = 'Selecione dois conjuntos';
+    }
+  }
+
+  beSqrt() {
+    let first = this.state.first;
+    let second = this.state.second;
+    let valueFirst = this.firstValue();
+    let valueSecond = this.secondValue();
+    let result = [] ;
+    let exp = /[A-Z]/g;
+    if (first.match(exp) && second.match(exp)) {
+      for (let i = 0; i < valueFirst.length; i++) {
+        for (let j = 0; j < valueSecond.length; j++) {
+          if (Math.pow(valueFirst[i], 2) === valueSecond[j]) {
+            result.push("<"+valueFirst[i]+", "+valueSecond[j]+">");
+          }
+        }
+      }
+      document.getElementById('result').innerHTML = "( V"+first+" = "+second+") => " + this.toText(result);
+    }
+    else {
+      document.getElementById('result').innerHTML = 'Selecione dois conjuntos';
+    }
   }
 
   notFound() {
     document.getElementById('result').innerHTML = 'Função não pronta';
   }
 
+  toText(text){
+    let result = "{ ";
+    text.forEach(x => {
+      result += x + ", ";
+    });
+    result += "}";
+    result = result.replace(", }", " }");
+    return result;
+  }
   render() {
     this.populateSelect();
     return (
@@ -389,21 +479,29 @@ class SelectMenu extends Component {
         </Columns>
         <Columns>
           <Column>
-            <Button isColor="info" onClick={this.elementsOf}>∈</Button>
-            <Button isColor="primary" onClick={this.elementsOf}>∉</Button>
-            <Button isColor="info" onClick={this.contains}>⊆</Button>
-            <Button isColor="primary" onClick={this.contains}>⊈</Button>
-            <Button isColor="info" onClick={this.properlyContains}>⊂</Button>
-            <Button isColor="primary" onClick={this.properlyContains}>⊄</Button>
-            <Button isColor="info" onClick={this.unionSet}>∪</Button>
-            <Button isColor="primary" onClick={this.interception}>∩</Button>
-            <Button isColor="info" onClick={this.cartesian}>x</Button>
-            <Button isColor="primary" onClick={this.partiallyOrderedSets}>P(A)</Button>
+            <Button isColor="info" isOutlined onClick={this.elementsOf}>∈</Button>
+            <Button isColor="primary" isOutlined onClick={this.elementsOf}>∉</Button>
+            <Button isColor="info" isOutlined onClick={this.contains}>⊆</Button>
+            <Button isColor="primary" isOutlined onClick={this.contains}>⊈</Button>
+            <Button isColor="info" isOutlined onClick={this.properlyContains}>⊂</Button>
+            <Button isColor="primary" isOutlined onClick={this.properlyContains}>⊄</Button>
+            <Button isColor="info" isOutlined onClick={this.unionSet}>∪</Button>
+            <Button isColor="primary" isOutlined onClick={this.interception}>∩</Button>
+            <Button isColor="info" isOutlined onClick={this.cartesian}>x</Button>
+            <Button isColor="primary" isOutlined onClick={this.partiallyOrderedSets}>P(A)</Button>
           </Column>
         </Columns>
         <Box id="result">
-
         </Box>
+        <Columns>
+          <Column>
+            <Button isColor="success" isOutlined onClick={this.lessThanThat}>(Menor que)</Button>
+            <Button isColor="info" isOutlined onClick={this.moreThanThat}> (Maior que) </Button>
+            <Button isColor="success" isOutlined onClick={this.equalsThan}>(Igual à)</Button>
+            <Button isColor="info" isOutlined onClick={this.toTheSecondPower}> (Quadrado de) </Button>
+            <Button isColor="success" isOutlined onClick={this.beSqrt}>(Raiz quadrada de)</Button>
+          </Column>
+        </Columns>
       </Field>
     );
   }

@@ -4,6 +4,7 @@ import UploadFile from '../components/UploadFile';
 import Txt2Json from '../components/Txt2Json';
 import SelectMenu from '../components/menu/SelectMenu';
 import ShowSets from '../components/ShowSets';
+import ManipuleSets from '../components/menu/ManipuleSets';
 
 
 class Home extends Component {
