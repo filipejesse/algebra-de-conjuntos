@@ -482,6 +482,7 @@ class SelectMenu extends Component {
 
 setTemp(){
   let teste = this.isFunctional();
+  let teste2 = this.isInjetora();
   if(teste){
     this.setState({
       isFuncional: true
@@ -492,7 +493,35 @@ setTemp(){
       isFuncional: false
     });
   }
+  if(teste2){
+    this.setState({
+      isInjetora: true
+    });
+  }
+  else{
+    this.setState({
+      isInjetora: false
+    });
+  }
 }
+
+isInjetora() {
+  let valueFirst = this.firstValue();
+  let valueSecond = this.secondValue();
+  for (let i = 0; i < valueFirst.length; i++) {
+    let cont = 0
+    for (let j = 0; j < valueSecond.length; j++) {
+      if (valueFirst[i] === valueSecond[j]) {
+        cont++;
+        if(cont > 1){
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
 
 
 
@@ -536,6 +565,8 @@ setTemp(){
           <Button isColor="primary" isOutlined onClick={this.setTemp}>Verify</Button>
           {this.state.isFuncional ?
             <Tag isColor="success">Is Functional</Tag> : <Tag isColor="danger">Isn't Functional</Tag> }
+          {this.state.isInjetora ?
+            <Tag isColor="success">Is Injetora</Tag> : <Tag isColor="danger">Isn't Injetora</Tag> }
         </Box>
         <Columns>
             <label className="switch">
